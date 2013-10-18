@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>IFRAME上传无刷新测试</title>
+    <script type="text/javascript" src="http://cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="content">
+    <p>说明：<span>{{ desc }}</span></p>
+    <form id="upload_form" action="{{ upHost }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name='token' value="{{ token }}">
+        <input type="file" name='file' id="uploadfile">
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    var fileUpLoad = function(config) {
+        var ifr = null,
+                fm = null,
+                defConfig = {
+                    submitBtn: $('#upload_form'), //提交按钮
+                    form_id: null,
+                    file_target: null,
+                    submitAction: 'change',
+                    response_target:null,
+                    complete: function(response) {
+                        alert(response);
+                    }, //上传成功后回调
+                    beforeUpLoad: function() {}, //点击提交未上传时回调
+                    afterUpLoad: function() {} //点击提交上传后回调
+                };
+
+        //静态变量
+        var IFRAME_NAME = 'fileUpLoadIframe';
+
+        //配置
+        config = $.extend(defConfig, config);
+
+        //绑定submit事件
+        config.submitBtn.bind(config.submitAction, function(e){
+            e.preventDefault();
+
+            //点击提交前触发事件, 函数返回false可阻止提交表单，用于file为空判断
+            if (config.beforeUpLoad.call(this) === false) {
+                return;
+            }
+
+            //生成一个隐藏iframe，并设置form的target为该iframe，模拟ajax效果
+            ifr = $('<iframe name="'+ IFRAME_NAME +'" id="'+ IFRAME_NAME +'" style="display:none;"></iframe>');
+            if (!config.form_id) {
+                fm = this.form;
+            }else{
+                fm = document.getElementById(config.form_id);
+            }
+
+            ifr.appendTo($('body'));
+            fm.target = IFRAME_NAME; //target目标设为ifr
+
+            //上传完毕iframe onload事件
+            ifr.load(function(){
+                var response = this.contentWindow.document.body.innerHTML;
+                config.complete.call(this, response);
+                if (config.file_target){
+                    config.file_target.val('')
+                }
+                ifr.remove();
+                ifr = null; //清除引用
+            });
+
+            fm.submit(); //提交表单
+
+            //点击提交后触发事件
+            config.afterUpLoad.call(this);
+
+        });
+    };
+    $().ready(function(){
+        fileUpLoad({
+            form_id: 'upload_form',
+            file_target: $('#uploadfile'),
+            beforeUpLoad: function() {
+
+            },
+            afterUpLoad: function() {
+
+            }
+        });
+    })
+</script>
+</html>
