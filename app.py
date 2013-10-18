@@ -25,7 +25,7 @@ conf.readfp(confFile)
 accesskey = conf.get('qiniu', 'accesskey')
 secretkey = conf.get('qiniu', 'secretkey')
 bucket = conf.get('qiniu', 'bucket')
-domain = conf.get('qiniu', 'domain')
+#domain = conf.get('qiniu', 'domain')
 qUpHost = conf.get('qiniu', 'upHost')
 
 siteDomain1 = conf.get('site', 'domain1')
