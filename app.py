@@ -32,10 +32,18 @@ siteDomain1 = conf.get('site', 'domain1')
 siteDomain2 = conf.get('site', 'domain2')
 
 description = dict()
-description['local_simple'] = '不跨域iframe上传，弹窗提示上传结果'
-description['local_crossdomain'] = '从 %s 域上传到 %s 域，上传结果无法处理' % (siteDomain1, siteDomain2)
-description['qiniu_crossdomain'] = '从 %s 域上传到up.qiniu.com域，uptoken不设置跳转，上传结果无法处理' % (siteDomain1,)
-description['qiniu_redirect'] = '从 %s 域上传到up.qiniu.com域，uptoken设置跳转到 %s 上的接口，弹窗提示上传结果。' % (siteDomain1, siteDomain1)
+description['local_simple'] = '''
+    不跨域上传，弹窗提示返回的json数据
+    '''
+description['local_crossdomain'] = '''
+    从 %s 域上传到 %s 域，无法获取返回的json数据
+    ''' % (siteDomain1, siteDomain2)
+description['qiniu_crossdomain'] = '''
+    从 %s 域上传到up.qiniu.com域，uptoken不设置跳转，无法获取返回的json数据
+    ''' % (siteDomain1,)
+description['qiniu_redirect'] = '''
+    从 %s 域上传到up.qiniu.com域，uptoken设置跳转到 %s 上的接口，弹窗提示接口返回的数据。
+    ''' % (siteDomain1, siteDomain1)
 
 
 #handlers
